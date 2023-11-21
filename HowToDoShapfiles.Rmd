@@ -1,0 +1,58 @@
+---
+title: "How to do shapefiles"
+author: "Juan Carlos Rubio-Polania"
+date: "2023-11-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r setup, include=FALSE}
+require(raster)
+require(sp)
+```
+
+```{r setup, include=FALSE}
+Location = read.csv('Location.csv')
+Location$Sta = seq(1,8,1)
+Location
+```
+
+```{r setup, include=FALSE}
+station = SpatialPoints(coords = Location[,3:4])
+```
+
+```{r setup, include=FALSE}
+Station = SpatialPointsDataFrame(station,
+                Location[,c(3:5,2,1)])
+```
+
+```{r setup, include=FALSE}
+raster::crs(Station) = CRS('+init=EPSG:4326')
+```
+
+```{r setup, include=FALSE}
+rgdal::writeOGR(Station, dsn = '.', 
+                layer = 'Birds',
+            driver = 'ESRI Shapefile')
+```
+
+```{r setup, include=FALSE}
+qq = rgdal::readOGR('Birds.shp')
+```
+
+```{r setup, include=FALSE}
+x11()
+par(mfrow = c(1,2))
+plot(qq, cex = 1, pch = 19,
+     col = 'dodgerblue',
+     xlab = 'Longitude',
+     ylab = 'Latitude')
+Axis(side = 1)
+Axis(side = 2)
+box()
+```
+
+
